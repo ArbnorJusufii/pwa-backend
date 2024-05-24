@@ -21,7 +21,7 @@ self.addEventListener('push', (event) => {
     const notification = {
         title: 'Hello, Notifications!',
         options: {
-            body: data,
+            body: `ID: ${Math.floor(Math.random() * 100)}`,
             tag: Math.floor(Math.random() * 1000),
             icon: './images/banner.jpg',
             image: './images/maskable_icon_x192.png',
