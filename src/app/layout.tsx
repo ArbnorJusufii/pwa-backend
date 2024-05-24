@@ -7,6 +7,8 @@ import 'primereact/resources/themes/lara-light-cyan/theme.css';
 import './globals.css';
 import Script from 'next/script';
 import Container from '@/components/common/Container';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Montserrat({ subsets: ['latin'] });
 
@@ -31,6 +33,15 @@ export default async function RootLayout({
                 </Script>
                 <PrimeReactProvider>
                     <ReduxProvider>
+                        <ToastContainer
+                            position='top-right'
+                            autoClose={2000}
+                            newestOnTop={false}
+                            closeOnClick
+                            rtl={false}
+                            pauseOnFocusLoss
+                            theme='light'
+                        />
                         <Container>{children}</Container>
                     </ReduxProvider>
                 </PrimeReactProvider>

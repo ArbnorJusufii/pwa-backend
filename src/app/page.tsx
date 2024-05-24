@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function Home() {
     const url =
@@ -32,6 +33,7 @@ export default function Home() {
         const permission = await Notification.requestPermission();
 
         if (permission !== 'granted') {
+            toast.error('Notification permission not granted');
             throw new Error('Notification permission not granted');
         }
     };
@@ -60,16 +62,31 @@ export default function Home() {
                     process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
             });
 
-            await saveSubscription(subscription);
+            saveSubscription(subscription).then((res: any) => {
+                if (res && res.status === 'Success') {
+                    toast.success(res.message);
+                }
+            });
         } catch (error) {
+            toast.error('Error enabling notifications');
             console.error('Error enabling notifications', error);
         }
     };
 
-    const sendNotificaiton = async () => {
-        await fetch(`${url}send-notification`, {
+    const sendNotificaiton = () => {
+        fetch(`${url}send-notification`, {
             method: 'GET',
-        });
+        })
+            .then((res: any) => {
+                console.log(res);
+
+                if (res && res.status === 200) {
+                    toast.success('Notification sent');
+                }
+            })
+            .catch((error: any) => {
+                toast.error('Error sending notification');
+            });
     };
 
     return (
@@ -88,84 +105,6 @@ export default function Home() {
                     Send Notification
                 </button>
             </div>
-            {/* <meta
-                name='theme-color'
-                media='(prefers-color-scheme: light)'
-                content='cyan'
-            />
-            <meta
-                name='theme-color'
-                media='(prefers-color-scheme: dark)'
-                content='black'
-            />
-            <Banner />
-            <div className='w-full p-5 sm:px-10'>
-                <GuestInformation
-                    href='/'
-                    fullName={'Olivia'}
-                    session={'Rapture Surfcamp Bali'}
-                    date={'10.10-18.10-2023'}
-                    total={300}
-                />
-
-                <div className='w-full flex flex-col md:space-x-14 md:flex-row'>
-                    <CardContainer
-                        title='Services'
-                        href='/'
-                        className='mt-10 md:w-1/2'>
-                        <Card
-                            title='Surf Lesson'
-                            description='10:00 - 11:00'
-                            descriptionRight='22 Att.'
-                            img='/images/banner.jpg'>
-                            <Banner />
-                            <GuestInformation
-                                href='/'
-                                fullName={'Olivia'}
-                                session={'Rapture Surfcamp Bali'}
-                                date={'10.10-18.10-2023'}
-                                total={300}
-                            />
-                        </Card>
-                        <Card
-                            title='Surf Lesson 2'
-                            description='13:00 - 15:00'
-                            descriptionRight='22 Att.'
-                            img='/images/banner.jpg'
-                            className=''></Card>
-                        <Card
-                            title='Yoga'
-                            description='11:00 - 13:00'
-                            descriptionRight='22 Att.'
-                            img='/images/banner.jpg'>
-                            <p className='text-black'>
-                                bkjasj kjadhkjsdaj kdha sjvdb jahksdj kabsdkab{' '}
-                            </p>
-                        </Card>
-                    </CardContainer>
-
-                    <CardContainer
-                        title='Products'
-                        href='/'
-                        className='mt-10 md:w-1/2'>
-                        <Card
-                            title='Beer'
-                            addBadge={true}
-                            img='/images/banner.jpg'
-                        />
-                        <Card
-                            title='Cola'
-                            addBadge={true}
-                            img='/images/banner.jpg'
-                        />
-                        <Card
-                            title='Hoodie'
-                            addBadge={true}
-                            img='/images/banner.jpg'
-                        />
-                    </CardContainer>
-                </div>
-            </div> */}
         </div>
     );
 }
