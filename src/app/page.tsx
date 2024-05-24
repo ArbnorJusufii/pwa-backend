@@ -58,8 +58,9 @@ export default function Home() {
 
             const subscription = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
-                applicationServerKey:
-                    process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
+                applicationServerKey: urlBase64ToUint8Array(
+                    process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY
+                ),
             });
 
             saveSubscription(subscription).then((res: any) => {
@@ -78,8 +79,6 @@ export default function Home() {
             method: 'GET',
         })
             .then((res: any) => {
-                console.log(res);
-
                 if (res && res.status === 200) {
                     toast.success('Notification sent');
                 }
@@ -88,6 +87,15 @@ export default function Home() {
                 toast.error('Error sending notification');
             });
     };
+
+    function urlBase64ToUint8Array(base64String: any) {
+        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding)
+            .replace(/-/g, '+')
+            .replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
+    }
 
     return (
         <div className='w-full'>
