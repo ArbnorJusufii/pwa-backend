@@ -16,16 +16,17 @@ self.addEventListener('push', (event) => {
     // };
 
     // self.registration.showNotification(title, notificationOptions);
+    const data = event.data.json();
 
     const notification = {
         title: 'Hello, Notifications!',
         options: {
-            body: `ID: ${Math.floor(Math.random() * 100)}`,
+            body: data,
             tag: Math.floor(Math.random() * 1000),
             icon: './images/banner.jpg',
             image: './images/maskable_icon_x192.png',
             vibrate: [100, 50, 200],
-            badge: './favicon.ico',
+            badge: './icon-192x192.png',
             tag: 'new-offers',
             renotify: true,
             actions: [{ action: 'confirm', title: 'Check offer', icon: '' }],
